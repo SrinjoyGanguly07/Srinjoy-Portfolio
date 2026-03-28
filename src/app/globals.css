@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+
+  /* Colors */
+  --color-background: hsl(0 0% 3.9%);
+  --color-foreground: hsl(0 0% 98%);
+  --color-card: hsl(0 0% 6%);
+  --color-card-foreground: hsl(0 0% 98%);
+  --color-primary: hsl(263 70% 65%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-muted: hsl(0 0% 12%);
+  --color-muted-foreground: hsl(0 0% 63.9%);
+  --color-accent: hsl(263 70% 65%);
+  --color-accent-foreground: hsl(0 0% 98%);
+  --color-border: hsl(0 0% 14.9%);
+
+  /* Animation keyframes */
+  --animate-blob: blob 7s infinite;
+  --animate-gradient-x: gradientX 4s ease infinite;
+
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+
+  @keyframes gradientX {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+}
+
+/* CSS custom properties for component use */
+:root {
+  --background: 0 0% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 6%;
+  --card-foreground: 0 0% 98%;
+  --primary: 263 70% 65%;
+  --primary-foreground: 0 0% 98%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 63.9%;
+  --accent: 263 70% 65%;
+  --accent-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  ::selection {
+    background-color: hsl(263 70% 65% / 0.3);
+    color: hsl(0 0% 98%);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, #c084fc, #a78bfa, #818cf8);
+  }
+  .glow {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.15);
+  }
+  .glow-sm {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+  }
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(0 0% 6%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 20%);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(263 70% 65% / 0.5);
+}
+
+/* Prose styles for MDX */
+.prose {
+  color: hsl(0 0% 85%);
+}
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: hsl(0 0% 98%);
+  font-weight: 700;
+}
+.prose a {
+  color: hsl(263 70% 70%);
+  text-decoration: none;
+}
+.prose a:hover {
+  text-decoration: underline;
+}
+.prose code {
+  background: hsl(0 0% 10%);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.875em;
+  color: hsl(263 70% 75%);
+}
+.prose pre {
+  background: hsl(0 0% 8%) !important;
+  border: 1px solid hsl(0 0% 14.9%);
+  border-radius: 8px;
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  color: hsl(0 0% 90%);
+}
+.prose blockquote {
+  border-left-color: hsl(263 70% 65%);
+  color: hsl(0 0% 70%);
+}
+.prose hr {
+  border-color: hsl(0 0% 14.9%);
+}
+.prose p {
+  margin-bottom: 1em;
+  line-height: 1.75;
+}
+.prose ul {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+.prose li {
+  margin-bottom: 0.25em;
+}
+.prose strong {
+  color: hsl(0 0% 95%);
+}

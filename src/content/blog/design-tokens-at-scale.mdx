@@ -1,0 +1,72 @@
+---
+title: "Design Tokens at Scale: A Developer's Survival Guide"
+description: "How to build a design system that designers love and developers don't hate — with real examples from production codebases."
+date: "2024-02-18"
+tags: ["Design", "CSS", "Design Systems"]
+readTime: "6 min read"
+published: true
+---
+
+## What are design tokens, really?
+
+Design tokens are the atomic decisions of your design system. Colors, typography scales, spacing units, border radii — anything that could change and affect the whole product.
+
+They're not a new idea. But getting them right at scale is harder than anyone admits.
+
+## The problem with ad-hoc design decisions
+
+Left unchecked, a codebase accumulates what I call "snowflake values" — one-off colors, arbitrary pixel measurements, margins that don't follow any system.
+
+```css
+/* Snowflake hell */
+.button { padding: 11px 18px; } /* Why 11? Why 18? */
+.card { color: #3a3a3a; } /* Is this in the design system? */
+.modal { border-radius: 7px; } /* 7?! */
+```
+
+Six months later, nothing matches anything, and your designer is filing bug reports about 3-pixel discrepancies.
+
+## A token taxonomy that works
+
+I've settled on three levels after trying many variations:
+
+**1. Primitive tokens** — raw values, never used directly in components.
+
+```css
+--color-purple-500: #8B5CF6;
+--space-4: 1rem;
+```
+
+**2. Semantic tokens** — meaning-bearing, reference primitives.
+
+```css
+--color-interactive-primary: var(--color-purple-500);
+--space-component-padding: var(--space-4);
+```
+
+**3. Component tokens** — component-specific, reference semantic tokens.
+
+```css
+--button-padding-x: var(--space-component-padding);
+--button-bg: var(--color-interactive-primary);
+```
+
+## The practical payoff
+
+When the design team decides to rebrand from purple to indigo? One line changes:
+
+```css
+--color-interactive-primary: var(--color-indigo-500);
+```
+
+Every button, every link, every interactive element updates. No grep-and-replace across 400 files.
+
+## Tooling recommendations
+
+- **Style Dictionary** for multi-platform token distribution
+- **CSS custom properties** for web (don't use Sass variables for tokens)
+- **Figma Tokens** plugin to keep design and code in sync
+
+---
+
+*Design tokens aren't glamorous. But they're the foundation that makes everything else maintainable.*

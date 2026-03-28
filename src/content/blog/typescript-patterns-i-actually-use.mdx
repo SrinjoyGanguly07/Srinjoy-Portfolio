@@ -1,0 +1,107 @@
+---
+title: "TypeScript Patterns I Actually Use in Every Project"
+description: "Not a list of obscure type-level magic. These are the patterns I reach for every single day that have made my code more maintainable."
+date: "2024-01-30"
+tags: ["TypeScript", "Engineering"]
+readTime: "10 min read"
+published: true
+---
+
+## Upfront disclaimer
+
+Every TypeScript article either lists 15 obvious things (unions, generics, ?) or goes deep into type gymnastics nobody ships in production.
+
+This one is different. These are patterns I use *literally every day*.
+
+## 1. The discriminated union pattern
+
+This is my most-used TypeScript pattern by a wide margin.
+
+```typescript
+type AsyncState<T> =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "success"; data: T }
+  | { status: "error"; error: Error };
+```
+
+What makes this powerful is exhaustive narrowing:
+
+```typescript
+function render<T>(state: AsyncState<T>) {
+  switch (state.status) {
+    case "idle": return <Empty />;
+    case "loading": return <Spinner />;
+    case "success": return <Data data={state.data} />; // data is typed!
+    case "error": return <ErrorMessage error={state.error} />;
+  }
+}
+```
+
+No more `data?.result ?? null` everywhere. No more optional chaining chains.
+
+## 2. Branded types for domain safety
+
+Primitive obsession kills large codebases.
+
+```typescript
+type UserId = string & { readonly brand: "UserId" };
+type OrderId = string & { readonly brand: "OrderId" };
+
+function createUserId(id: string): UserId {
+  return id as UserId;
+}
+
+// Now you can't pass an OrderId where UserId is expected
+function getUser(id: UserId) { /* ... */ }
+getUser(orderId); // TypeScript error!
+```
+
+I brand everything that represents a domain identity. Database IDs, slugs, email addresses.
+
+## 3. Utility types as vocabulary
+
+Stop writing the same complex types over and over. Build a vocabulary:
+
+```typescript
+// A function that takes T and returns Promise<T>
+type AsyncFn<T> = (input: T) => Promise<T>;
+
+// A component that accepts children
+type WithChildren<T = {}> = T & { children: React.ReactNode };
+
+// A form field value that can be empty
+type FormField<T> = T | null | undefined;
+```
+
+## 4. const assertions for config objects
+
+```typescript
+const ROUTES = {
+  home: "/",
+  about: "/about",
+  projects: "/projects",
+} as const;
+
+// Now ROUTES.home is typed as "/" not string
+type Route = (typeof ROUTES)[keyof typeof ROUTES];
+```
+
+## 5. satisfies over type annotations
+
+New in TypeScript 4.9 and criminally underused:
+
+```typescript
+const config = {
+  theme: "dark",
+  lang: "en",
+  features: ["blog", "projects"],
+} satisfies Record<string, string | string[]>;
+
+// config.theme is "dark" not string (inference preserved)
+// But it's still validated against the type
+```
+
+---
+
+*TypeScript's best feature isn't the type system — it's that it forces you to think clearly about your domain model.*

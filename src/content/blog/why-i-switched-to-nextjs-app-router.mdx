@@ -1,0 +1,58 @@
+---
+title: "Why I Switched to the Next.js App Router (And Never Looked Back)"
+description: "After a year of production use, here's my honest take on the App Router — the good, the rough edges, and why it's changed how I think about React."
+date: "2024-03-10"
+tags: ["Next.js", "React", "Engineering"]
+readTime: "8 min read"
+published: true
+---
+
+## The honest take
+
+I resisted the App Router for longer than I should have. Pages Router was comfortable. I knew it. It worked. Why change?
+
+Then I started a greenfield project in January 2023 and forced myself to go all-in.
+
+Here's what I found.
+
+## What's actually better
+
+**Layouts are a first-class primitive.**
+
+This might sound small. It isn't. Nested layouts — persistent sidebars, animated page transitions, shared loading states — are now trivially easy. In Pages Router, I'd hack around these with `_app.tsx` gymnastics.
+
+**Server Components changed how I think.**
+
+The mental model shift takes a week. Once it clicks, you'll never want to go back. Data fetching *directly in your components*, no useEffect, no loading state management for simple reads. Just `async/await` at the component level.
+
+```tsx
+// This just works. No useEffect. No useState.
+async function UserProfile({ userId }: { userId: string }) {
+  const user = await db.users.findUnique({ where: { id: userId } });
+  return <div>{user.name}</div>;
+}
+```
+
+**Streaming and Suspense work beautifully.**
+
+Incremental page rendering. Show the shell, stream in the data as it arrives. Users see *something* in milliseconds.
+
+## The rough edges
+
+I won't sugarcoat it.
+
+**The mental model is genuinely hard at first.** Server vs Client components, when to add `"use client"`, why your context doesn't work in a server component — these trip people up. A lot.
+
+**The error messages are improving, but still painful.** Some runtime errors are cryptic. The `Cannot read property of undefined` messages from server actions have humbled me more than once.
+
+**Third-party libraries are still catching up.** Some component libraries haven't adapted. You'll reach for `"use client"` more than you'd like.
+
+## Should you use it?
+
+Yes. Especially for new projects.
+
+The productivity gains from colocated data fetching, proper layouts, and streaming outweigh the learning curve by a significant margin.
+
+---
+
+*What's your experience with the App Router? Find me on Twitter and let me know.*
